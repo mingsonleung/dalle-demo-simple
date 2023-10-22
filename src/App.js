@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import generateImage from './image';
 
 function App() {
+  const [text, setText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const newImageUrl = await generateImage(text);
+    setImageUrl(newImageUrl);
+    setLoading(false);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>DALL-E Image Generator</h1>
+      <input
+        type="text"
+        placeholder="Enter prompt"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={handleSubmit}>Generate Image</button>
+      <div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          imageUrl && <img src={imageUrl} alt="Generated content" />
+        )}
+      </div>
     </div>
   );
 }
